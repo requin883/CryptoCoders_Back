@@ -13,7 +13,9 @@
     "@binance/connector": "^1.13.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.9.1",
-    "netlify": "^12.0.1"
+    "netlify": "^12.0.1",
+    "nodemailer": "^6.7.8"
   }
 }
