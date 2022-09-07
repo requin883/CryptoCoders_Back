@@ -5,3 +5,7 @@ functions = "functions"
 from="/*"
 to="/.netlify/functions/:splat"
 status=200
+
+[context.dev]
+environment ={FRONT_URI = "http://localhost:5173",MONGO_URI = "mongodb+srv://cryptocoders:cryptocoders@cluster0.o2sbqjl.mongodb.net/?retryWrites=true&w=majority",JWT_SECRET = "CryptoCoders", NODEMAILER_USER = "cryptocoders2022@gmail.com", NODEMAILER_PW = "hxqsxpqacpgxsimu"}
+  
