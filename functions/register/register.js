@@ -14,7 +14,7 @@ exports.handler = async (event) => {
     let client = await connectDB()
     const colUsers = client.db().collection('users');
 
-    if(method == "POST"){
+    if(method == "POST" || method=="OPTIONS"){
     
             try {
              
