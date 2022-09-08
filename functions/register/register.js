@@ -3,17 +3,29 @@ const { output } = require('../../utils');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { transporter, accountVerOpt } = require('../../Utils/nodemailer');
+const connectCollection = require('../../Utils/connectCollection');
+
+
 exports.handler = async (event) => {
 
     let {
         httpMethod: method,
         queryStringParameters: p
     } = event;
+    
+    const colUsers = await connectCollection('users');
 
-    let client = await connectDB()
-    const colUsers = client.db().collection('users');
     if (method == "POST" || method == "OPTIONS") {
         try {
+            
+            const userExists = await colUsers.findOne({email:p.email});
+
+            if(userExists){
+                return{
+                    statusCode:403,
+                    body:JSON.stringify({message:"User exists"})
+                }
+            }
 
             let salt = await bcrypt.genSalt(10);
             let hash = await bcrypt.hash(p.password, salt);
