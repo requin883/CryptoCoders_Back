@@ -2,7 +2,7 @@ const connectDB = require('../connectDB/connectDB');
 const { output } = require('../../utils');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { transporter, accountVerOpt } = require('../../Utils')
+const { transporter, accountVerOpt } = require('../../Utils/nodemailer');
 exports.handler = async (event) => {
 
     let {
@@ -10,12 +10,9 @@ exports.handler = async (event) => {
         queryStringParameters: p
     } = event;
 
-    
     let client = await connectDB()
     const colUsers = client.db().collection('users');
-
     if (method == "POST" || method == "OPTIONS") {
-
         try {
 
             let salt = await bcrypt.genSalt(10);
@@ -26,7 +23,6 @@ exports.handler = async (event) => {
                 password: p.password
             }, process.env.JWT_SECRET,
                 { expiresIn: "1h" });
-
             const user = await colUsers.insertOne({
 
                 email: p.email,
@@ -43,18 +39,15 @@ exports.handler = async (event) => {
 
             transporter.sendMail(accountVerOpt(p, verLink));
 
-            return output(1)
+            return ({
+                statusCode: 200,
+                body: JSON.stringify({ user })
+            })
 
         } catch (error) {
 
             console.log(error)
         }
-
-
-
-
-
-
 
     }
 
