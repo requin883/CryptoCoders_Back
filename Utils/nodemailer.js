@@ -9,6 +9,17 @@ const transporter = createTransport({
     }
 });
 
+const resetPwOptions = (user, resetLink) => {
+    let { email, names } = user;
+    return {
+        from: "CryptoCoders",
+        to: email,
+        bbc: process.env.NODEMAILER_USER,
+        subject: `Reinicio de contraseña`,
+        html: `<h2>${names}!Para poder cambiar tu contraseña por favor ingresa en el siguiente link <a href=${resetLink}>Reiniciar Contraseña</a></h2>`
+    }
+};
+
 const accountVerOpt = (user, verLink) => {
     let { email, names } = user;
     return {
@@ -20,4 +31,4 @@ const accountVerOpt = (user, verLink) => {
     }
 };
 
-module.exports = { transporter, accountVerOpt };
+module.exports = { transporter, resetPwOptions ,accountVerOpt };
