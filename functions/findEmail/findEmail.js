@@ -13,8 +13,11 @@ exports.handler = async (event) => {
    let client = await connectDB()
    const colUsers = client.db().collection('users');
   
+   if (method == "OPTIONS"){
+      return output('hola')
+   }
 
-   if (method == "GET") {
+   if (method == "GET"  ) {
 
       let { email } = p;
       try {

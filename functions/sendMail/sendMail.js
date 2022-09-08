@@ -1,1 +1,0 @@
-//clave hxqs xpqa cpgx simu
