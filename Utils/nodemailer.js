@@ -1,6 +1,4 @@
-import { createTransport } from "nodemailer";
-
-
+const { createTransport } = require("nodemailer");
 
 const transporter = createTransport({
     service: 'gmail',
