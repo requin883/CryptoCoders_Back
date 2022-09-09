@@ -17,15 +17,20 @@ exports.handler = async (event) => {
       return output('hola')
    }
 
-   if (method == "GET"  ) {
+   if (method == "POST"  ) {
 
-      let { email } = p;
-      try {
+       try {
+           
+        let { email,oldPassword, newPassword } = p;
+        let user = await colUsers.find({ email }).toArray();
 
-         let user = await colUsers.find({ email }).toArray();
-         let flag;
-         if (user.length == 0) { flag = 0 } else { flag = 1 }
-         return output(flag);
+        if (oldPassword == user[0].password){
+
+            await colUsers.updateOne({ email }, {$set:{password:newPassword}});
+            return output(1)
+        } else { return output(0)}
+
+         
 
       } catch (error) {console.log(error);}
    }
