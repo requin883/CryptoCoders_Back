@@ -1,5 +1,5 @@
 let { output } = require('../../utils');
-let connectDB = require('../connectDB/connectDB');
+const connectCollection = require('../../Utils/connectCollection');
 
 
 exports.handler = async (event) => {
@@ -9,23 +9,21 @@ exports.handler = async (event) => {
       queryStringParameters: p
    } = event;
 
-   
-   let client = await connectDB()
-   const colUsers = client.db().collection('users');
-  
-   if (method == "OPTIONS"){
+   const colUsers = connectCollection('users');
+
+   if (method == "OPTIONS") {
       return output('hola')
    }
 
-   if (method == "POST"  ) {
+   if (method == "POST") {
 
       let { email } = p;
       try {
 
-          await colUsers.updateOne({ email }, {$set:{password:p.password}});
+         await colUsers.updateOne({ email }, { $set: { password: p.password } });
 
          return output(1);
 
-      } catch (error) {console.log(error);}
+      } catch (error) { console.log(error); }
    }
 }
