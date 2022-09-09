@@ -8,6 +8,7 @@ const connectCollection = require('../../Utils/connectCollection');
 
 exports.handler = async (event) => {
 
+
     let {
         httpMethod: method,
         queryStringParameters: p
@@ -15,7 +16,13 @@ exports.handler = async (event) => {
     
     const colUsers = await connectCollection('users');
 
-    if (method == "POST" || method == "OPTIONS") {
+    if(method == "OPTIONS"){
+
+        return output('hola')
+    }
+
+    if (method == "POST") {
+
         try {
             
             const userExists = await colUsers.findOne({email:p.email});
@@ -46,6 +53,28 @@ exports.handler = async (event) => {
                 verToken: userToken
 
             });
+
+
+            const transporter = nodeMailer.createTransport({
+                service: 'gmail',
+                port: 587,
+                auth: {
+                    user: process.env.NODEMAILER_USER,
+                    pass: process.env.NODEMAILER_PW
+                }
+            });
+            
+            const accountVerOpt = (user, verLink) => {
+                let { email, names } = user;
+                return {
+                    from: "CryptoCoders",
+                    to: email,
+                    bbc: process.env.NODEMAILER_USER,
+                    subject: `Confirmacion de tu cuenta de CrytoCoders`,
+                    html: `<h2>${names}! Para poder activar la cuenta por favor ingresa en el siguiente link <a href=${verLink}>Activar cuenta</a></h2>`
+                }
+            };
+
 
             const verLink = `${process.env.FRONT_URI}/activate-account/${userToken}`;
 
