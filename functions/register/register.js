@@ -45,7 +45,8 @@ exports.handler = async (event) => {
             password: hash,
             verify: false,
             verToken: userToken,
-            saldo: 0,
+            balance: 0,
+            payments:[]
             });
 
             
@@ -113,7 +114,8 @@ exports.handler = async (event) => {
                     password: hash,
                     verify: false,
                     verToken: userToken,
-                    saldo: 0,}
+                    balance: 0,
+                    payments:[]}
                     });
         
                     const transporter = nodeMailer.createTransport({
