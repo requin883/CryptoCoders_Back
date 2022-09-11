@@ -18,7 +18,7 @@ exports.handler = async (event) => {
 
    if (method == "POST"  ) {
     
-      let { email, paymentReference } = p;
+      let { email} = p;
       try {
          
          //GETTING USER PAYMENTS
@@ -32,104 +32,43 @@ exports.handler = async (event) => {
          const client = new Spot(apiKey, apiSecret)
 
 
-          let call = {
-
-            data: [ {
-                
-                    
-                code: '000000',
-                message: 'success',
-                data: [
-                  {
-                    orderType: 'C2C',
-                    transactionId: 'C_P_144702781155115009',
-                    transactionTime: 1645219283603,
-                    amount: '-140',
-                    currency: 'USDT',
-                    walletType: 2,
-                    fundsDetail: [Array]
-                  }
-                ],
-                success: true
-              
-                
-            },
-
-            {
-                
-                    
-                    code: '000000',
-                    message: 'success',
-                    data: [
-                      {
-                        orderType: 'C2C',
-                        transactionId: 'xd',
-                        transactionTime: 1645219283603,
-                        amount: '600',
-                        currency: 'USDT',
-                        walletType: 2,
-                        fundsDetail: [Array]
-                      }
-                    ],
-                    success: true
-                  
-                    
-                },
-
-                {
-                    
-                        
-                        code: '000000',
-                        message: 'success',
-                        data: [
-                          {
-                            orderType: 'C2C',
-                            transactionId: 'zd',
-                            transactionTime: 1645219283603,
-                            amount: '500',
-                            currency: 'USDT',
-                            walletType: 2,
-                            fundsDetail: [Array]
-                          }
-                        ],
-                        success: true
-                      
-                        
-                    }]
-          }
-
-          
-          
-                
-
-
+         let call = await client.payHistory({startTime:'1660177197000'})
+        
                 let flagFound = false;
-                
-                let transferLen = call.data.length;
-                let i=0,index=0;
-                
-                for(;i<transferLen;i++){
+                let {year,month,day,hours,minutes,seconds, quantity} = p;
 
-                  if(call.data[i].data[0].transactionId==paymentReference){index=i; flagFound=true};
+                let date = new Date(`${year}-${month}-${day}T${hours}:${minutes}:${seconds}`)
+                let timestamp = date.getTime();
+                
+                let i=0,index=0;
+                let payments=call.data.data;
+                
+                do{
                   
-                }
+                  if(payments[i].transactionTime==timestamp && Number(payments[i].amount=quantity)){index=i; flagFound=true};
+                  i++;
+
+                }while(flagFound==false)
+
+                  
+                
                 
                 if(flagFound==false){return output(0)} // no se consiguió la transferencia
                
-                let flagCurrency=true, flagState=true;
-                if(call.data[index].success!=true){flagState=false};
-                if(call.data[index].data[0].currency !='USDT' || call.data[index].data[0].currency !='BUSD'){flagCurrency=false};
+                let flagCurrency=true;
                 
-                if(flagCurrency == false || flagState==false){
+                if(payments[index].currency !='USDT' && payments[index].currency !='BUSD' ){flagCurrency=false; return output(2)};
+                
+                if(flagCurrency == true && flagFound==true){
 
-                  userData.payments.push(call.data[index])
-                  userData.balance+=Number(call.data[index].data[0].amount)
+                  userData.payments.push(payments[index])
+                  userData.balance+=Number(payments[index].amount)
                    await colUsers.updateOne({email:email},{$set:{payments:userData.payments, balance:userData.balance}})
                   return output(1)
 
                 }
 
-         return output(call.data[index]);
+         
 
       } catch (error) {console.log(error);}
 
