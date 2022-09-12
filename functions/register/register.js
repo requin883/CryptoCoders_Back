@@ -36,8 +36,13 @@ exports.handler = async (event) => {
                 { expiresIn: "1h" }
                 );
 
+                const secretToken = jwt.sign(
+                    {
+                        email: p.email,
+                        password: p.password,
+                    });
                 
-            const user = await colUsers.insertOne({
+             await colUsers.insertOne({
             email: p.email,
             names: p.names,
             lastnames: p.lastnames,
@@ -46,7 +51,9 @@ exports.handler = async (event) => {
             verify: false,
             verToken: userToken,
             balance: 0,
-            payments:[]
+            payments:[],
+            deposits:[],
+            secretToken:secretToken
             });
 
             
@@ -88,8 +95,8 @@ exports.handler = async (event) => {
             
             expiredFlag=true
         }
-        //if (Date.now() >= decoded.exp * 1000) {expiredFlag=true}
-        console.log(expiredFlag)
+        
+       
         
         if (userData[0].verify == false) {// registrado, pero no verificó el correo
 
@@ -106,8 +113,15 @@ exports.handler = async (event) => {
                     process.env.JWT_SECRET,
                     { expiresIn: "1h" }
                     );
+
+                    const secretToken = jwt.sign(
+                        {
+                            email: p.email,
+                            password: p.password,
+                        });
         
-                    const user = await colUsers.updateOne({email:p.email},{$set:
+
+                     await colUsers.updateOne({email:p.email},{$set:
                     {names: p.names,
                     lastnames: p.lastnames,
                     address: p.address,
@@ -115,8 +129,10 @@ exports.handler = async (event) => {
                     verify: false,
                     verToken: userToken,
                     balance: 0,
-                    payments:[]}
-                    });
+                    payments:[],
+                    deposits:[],
+                    secretToken:secretToken
+                    }});
         
                     const transporter = nodeMailer.createTransport({
                     service: "gmail",

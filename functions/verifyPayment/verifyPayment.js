@@ -61,9 +61,9 @@ exports.handler = async (event) => {
                 
                 if(flagCurrency == true && flagFound==true){
 
-                  userData.payments.push(payments[index])
+                  userData.deposits.push(payments[index])
                   userData.balance+=Number(payments[index].amount)
-                   await colUsers.updateOne({email:email},{$set:{payments:userData.payments, balance:userData.balance}})
+                   await colUsers.updateOne({email:email},{$set:{deposits:userData.deposits, balance:userData.balance}})
                   return output(1)
 
                 }
