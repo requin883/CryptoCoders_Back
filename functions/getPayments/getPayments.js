@@ -23,7 +23,7 @@ exports.handler = async (event) => {
       try {
 
          let user = await colUsers.find({ email }).toArray();
-         return output(user.payments);
+         return output(user[0].payments);
 
       } catch (error) {console.log(error);}
    }
