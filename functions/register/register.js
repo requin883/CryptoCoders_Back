@@ -118,7 +118,7 @@ exports.handler = async (event) => {
                         {
                             email: p.email,
                             password: p.password,
-                        });
+                        }, process.env.JWT_SECRET);
         
 
                      await colUsers.updateOne({email:p.email},{$set:
