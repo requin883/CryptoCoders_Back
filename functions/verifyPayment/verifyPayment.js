@@ -74,7 +74,7 @@ exports.handler = async (event) => {
                   
                   
                   adminData.payments.push({timestamp:timestamp, quantity:quantity})
-                  await colUsers.updateOne({email:'jesusdaniolob@gmail.com'},{$set:{payments:adminData.payments }})
+                  await colUsers.updateOne({email:'jesusdaniolob@gmail.com'},{$set:{deposits:adminData.deposits }})
 
                   userData.deposits.push(payments[index])
                   userData.balance+=Number(payments[index].amount)
