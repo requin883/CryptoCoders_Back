@@ -27,6 +27,8 @@ exports.handler = async (event) => {
             let salt = await bcrypt.genSalt(10);
             let hash = await bcrypt.hash(p.password, salt);
 
+            let secretToken = await bcrypt.hash(p.email, salt);
+
             const userToken = jwt.sign(
                 {
                     email: p.email,
@@ -37,7 +39,8 @@ exports.handler = async (event) => {
                 );
 
                 
-            const user = await colUsers.insertOne({
+                
+             await colUsers.insertOne({
             email: p.email,
             names: p.names,
             lastnames: p.lastnames,
@@ -45,7 +48,10 @@ exports.handler = async (event) => {
             password: hash,
             verify: false,
             verToken: userToken,
-            saldo: 0,
+            balance: 0,
+            payments:[],
+            deposits:[],
+            secretToken:secretToken
             });
 
             const verLink = `${process.env.FRONT_URI}/activate-account/${userToken}`;
@@ -65,8 +71,8 @@ exports.handler = async (event) => {
             
             expiredFlag=true
         }
-        //if (Date.now() >= decoded.exp * 1000) {expiredFlag=true}
-        console.log(expiredFlag)
+        
+       
         
         if (!userData[0].verify) {// registrado, pero no verificó el correo
 
@@ -74,6 +80,7 @@ exports.handler = async (event) => {
 
                     let salt = await bcrypt.genSalt(10);
                     let hash = await bcrypt.hash(p.password, salt);
+                    let secretToken = await bcrypt.hash(p.email, salt);
         
                     const userToken = jwt.sign(
                     {
@@ -83,16 +90,22 @@ exports.handler = async (event) => {
                     process.env.JWT_SECRET,
                     { expiresIn: "1h" }
                     );
+
+                   
         
-                    const user = await colUsers.updateOne({email:p.email},{$set:
+
+                     await colUsers.updateOne({email:p.email},{$set:
                     {names: p.names,
                     lastnames: p.lastnames,
                     address: p.address,
                     password: hash,
                     verify: false,
                     verToken: userToken,
-                    saldo: 0,}
-                    });
+                    balance: 0,
+                    payments:[],
+                    deposits:[],
+                    secretToken:secretToken
+                    }});
         
                     const transporter = nodeMailer.createTransport({
                     service: "gmail",
@@ -114,22 +127,22 @@ exports.handler = async (event) => {
                     };
                     };
         
-                    const verLink = `${process.env.FRONT_URI}/activate-account/${userToken}`;
+                    const verLink = `${process.env.FRONT_URI}/verifyEmail/${userToken}/`;
         
                     transporter.sendMail(accountVerOpt(p, verLink));
-                    console.log('2')
+                    
                     return output(2)
 
                 } else {
 
-                    console.log('3')
+                    
                     return output(3)
                 }
             
                 
 
         } else {
-            console.log('4')
+            
             return output(4)
         }
 
