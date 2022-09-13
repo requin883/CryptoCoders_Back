@@ -27,8 +27,8 @@ exports.handler = async (event) => {
          //let pagos= userData.payments;
 
          // BINANCE TOKENS
-         const apiKey = 'tnRIEcXVqPJDo6zM1fMjO8F2mc1DkuEGanpPmOHW0zeQsHPZWNJtgTPwzZ86Z0b5'
-         const apiSecret = 'MtM0sNU2D8wgZ0XIIjhuV716SGV2iaE4naXzVOOToapdAEUvT01birqoRmcv0gYu'
+         const apiKey = 'rvNRTc7gAziiqFx0KxzmNXidu4LFLc6rnMf7CKrCnKxGMK5MbvlPvtVIP3pt5bgR'
+         const apiSecret = 'aXEgRkYymsVCG2QkYFK1gCDZVVKeZ87fEINWyp6d50XyA68saqCNIijaTR9I5ryy'
          const client = new Spot(apiKey, apiSecret)
 
 
