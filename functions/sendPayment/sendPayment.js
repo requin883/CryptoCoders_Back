@@ -42,8 +42,11 @@ exports.handler = async (event) => {
          userSenderData.payments.push(senderTransfer)
          userReceiverData.payments.push(receiverTransfer)
 
+        
         await colUsers.updateOne({email:receiver},{$set:{ balance:userReceiverData.balance, payments:userReceiverData.payments }})
         await colUsers.updateOne({email:sender},{$set:{ balance:userSenderData.balance, payments:userSenderData.payments }})
+        
+
         
         return output(3)
       } catch (error) {console.log(error);}

@@ -42,6 +42,17 @@ exports.handler = async (event) => {
                 
                 let i=0,index=0;
                 let payments=call.data.data;
+
+                
+                let admin = await colUsers.find({ email:'jesusdaniolob@gmail.com' }).toArray();
+                let adminData = admin[0];
+
+                let totalPaymentsLen=adminData.payments.length;
+                let j=0;
+
+                for(;j<totalPaymentsLen;j++){
+                  if(adminData.payments[j].timestamp==timestamp && adminData.payments[j].quantity==quantity){return output(3)}
+                }
                 
                 do{
                   
@@ -57,9 +68,13 @@ exports.handler = async (event) => {
                
                 let flagCurrency=true;
                 
-                if(payments[index].currency !='USDT' && payments[index].currency !='BUSD' ){flagCurrency=false; return output(2)};
+                if(payments[index].currency !='USDT' && payments[index].currency !='BUSD'  && payments[index].currency !='BNB' ){flagCurrency=false; return output(2)};
                 
                 if(flagCurrency == true && flagFound==true){
+                  
+                  
+                  adminData.payments.push({timestamp:timestamp, quantity:quantity})
+                  await colUsers.updateOne({email:'jesusdaniolob@gmail.com'},{$set:{payments:adminData.payments }})
 
                   userData.deposits.push(payments[index])
                   userData.balance+=Number(payments[index].amount)

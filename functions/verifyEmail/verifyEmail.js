@@ -28,7 +28,8 @@ exports.handler = async (event) => {
 
         if(userData.verify==true){return output(1)}
 
-        await colUsers.updateOne({token:token},{$set:{ verify:true}})
+        userData.verify=true;
+        await colUsers.updateOne({verToken:token},{$set:{verify:userData.verify}})
 
         return output(2)
         
