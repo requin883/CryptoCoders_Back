@@ -27,6 +27,8 @@ exports.handler = async (event) => {
             let salt = await bcrypt.genSalt(10);
             let hash = await bcrypt.hash(p.password, salt);
 
+            let secretToken = await bcrypt.hash(p.email, salt);
+
             const userToken = jwt.sign(
                 {
                     email: p.email,
@@ -36,11 +38,7 @@ exports.handler = async (event) => {
                 { expiresIn: "1h" }
                 );
 
-                const secretToken = jwt.sign(
-                    {
-                        email: p.email,
-                        password: p.password,
-                    }, process.env.JWT_SECRET);
+                
                 
              await colUsers.insertOne({
             email: p.email,
@@ -104,6 +102,7 @@ exports.handler = async (event) => {
 
                     let salt = await bcrypt.genSalt(10);
                     let hash = await bcrypt.hash(p.password, salt);
+                    let secretToken = await bcrypt.hash(p.email, salt);
         
                     const userToken = jwt.sign(
                     {
@@ -114,11 +113,7 @@ exports.handler = async (event) => {
                     { expiresIn: "1h" }
                     );
 
-                    const secretToken = jwt.sign(
-                        {
-                            email: p.email,
-                            password: p.password,
-                        }, process.env.JWT_SECRET);
+                   
         
 
                      await colUsers.updateOne({email:p.email},{$set:
@@ -154,22 +149,22 @@ exports.handler = async (event) => {
                     };
                     };
         
-                    const verLink = `${process.env.FRONT_URI}/activate-account/${userToken}`;
+                    const verLink = `${process.env.FRONT_URI}/verifyEmail/${userToken}/`;
         
                     transporter.sendMail(accountVerOpt(p, verLink));
-                    console.log('2')
+                    
                     return output(2)
 
                 } else {
 
-                    console.log('3')
+                    
                     return output(3)
                 }
             
                 
 
         } else {
-            console.log('4')
+            
             return output(4)
         }
 
